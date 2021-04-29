@@ -21,10 +21,23 @@ class GetGovFile {
         $this->httpClient = new Client();
     }
 
-    const QUERY_HOLIDAY_FILE = 'https://sousuo.gov.cn/data';
+    const QUERY_HOLIDAY_FILE = 'http://sousuo.gov.cn/data';
 
-    /** @var string param id, file num */
-    const GET_GOV_HOLIDAY_CONTENT = 'https://xcx-static.www.gov.cn/static/gwymp/h5/index.html';
+    /**
+     * param id, file num
+     *
+     * @url https://xcx-static.www.gov.cn/static/gwymp/h5/index.html?id=5564127
+     *
+     * @var string
+     */
+    const GET_GOV_HOLIDAY_CONTENT = 'https://xcx-static.www.gov.cn/xhrb/json_file';
+
+    /**
+     * @return int|null
+     */
+    public function getYear(): ?int {
+        return $this->year;
+    }
 
     /**
      * @param int $year
@@ -38,26 +51,31 @@ class GetGovFile {
     }
 
     /**
-     * @return false|string
+     * @return string|null
      * @throws Exception
      */
-    public function getFileContent() {
-        if (!$this->year) {
-            throw new Exception('');
-        }
-
+    public function getFileContent(): ?string {
         $fileNum = $this->getFileNum($this->year);
 
-        return file_get_contents(self::GET_GOV_HOLIDAY_CONTENT . "?id={$fileNum}");
+        $result = $this->httpClient->get(self::GET_GOV_HOLIDAY_CONTENT . "/content_{$fileNum}.json")
+            ->getBody();
+
+        $result = json_decode($result, true);
+
+        if (json_last_error() === JSON_ERROR_NONE) {
+            return $result['content'] ?? null;
+        }
+
+        return null;
     }
 
     /**
-     * @param int $year
+     * @param int|null $year
      *
      * @return false|string
      */
-    private function getFileNum(int $year) {
-        $content = $this->queryFile($year);
+    private function getFileNum(?int $year = null) {
+        $content = $this->queryFile($year ?: '');
 
         $queryResult = $content['searchVO']['listVO'] ?? null;
 
@@ -71,11 +89,11 @@ class GetGovFile {
     }
 
     /**
-     * @param int $year
+     * @param string $year
      *
      * @return array|null
      */
-    private function queryFile(int $year): ?array {
+    private function queryFile(string $year = ''): ?array {
         $result = $this->httpClient->get(self::QUERY_HOLIDAY_FILE, [
             'query' => [
                 't' => 'zhengcelibrary_gw',

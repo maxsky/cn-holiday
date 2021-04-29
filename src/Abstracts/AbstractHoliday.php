@@ -10,12 +10,12 @@
 namespace Holiday\Abstracts;
 
 use Exception;
-use Holiday\Util\GetFile;
+use Holiday\Util\FileUtil;
 use ICal\ICal;
 
 abstract class AbstractHoliday {
 
-    use GetFile;
+    use FileUtil;
 
     const OPTIONS = [
         'defaultSpan' => 2,

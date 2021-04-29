@@ -11,11 +11,11 @@ namespace Holiday;
 
 use Carbon\Carbon;
 use Holiday\Abstracts\AbstractHoliday;
-use Holiday\Util\GetFile;
+use Holiday\Util\FileUtil;
 
 class CNHoliday extends AbstractHoliday {
 
-    use GetFile;
+    use FileUtil;
 
     /** @var CNHoliday */
     public static $holiday;

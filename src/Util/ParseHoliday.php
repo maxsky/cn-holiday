@@ -9,7 +9,12 @@
 
 namespace Holiday\Util;
 
+use Carbon\Carbon;
+use Exception;
+
 class ParseHoliday {
+
+    use RegexUtil;
 
     const FESTIVAL = [
         'new' => '元旦',
@@ -25,28 +30,37 @@ class ParseHoliday {
 
     private $fileContent;
 
-    public function parse() {
-        $this->fileContent = (new GetGovFile())->setYear(2021)->getFileContent();
-    }
-
-    private function parseNewYear() {
-        $kw = self::FESTIVAL['new'];
-
-        $this->getFestivalLine($kw);
-
-
-        preg_match("/(?<={$kw}：).*?(?=放假)/", $this->fileContent, $holiday);
-    }
+    private $beginDate;
+    private $endDate;
 
     /**
-     * @param string $keyword
+     * ParseHoliday constructor.
      *
-     * @return string|null
+     * @throws Exception
      */
-    private function getFestivalLine(string $keyword): ?string {
-        preg_match("/^{$keyword}：.*?。/", $this->fileContent, $festival);
+    public function __construct(?int $year = null) {
+        $getGovFile = new GetGovFile();
 
-        return $festival[0] ?? null;
+        if ($year) {
+            $getGovFile->setYear($year);
+        }
+
+        $this->fileContent = $getGovFile->getFileContent();
+    }
+
+    public function parseNewYear() {
+        $keyword = self::FESTIVAL['new'];
+
+        $lineStr = $this->getLineString($keyword);
+        var_dump($lineStr);
+
+        $date = $this->getBeginDate($lineStr);
+
+        var_dump(Carbon::rawCreateFromFormat('Y年m月d日', "2021年{$date}"));
+
+        var_dump($this->getDateLength($lineStr));
+
+        preg_match("/(?<={$keyword}：).*?(?=放假)/", $this->fileContent, $holiday);
     }
 
     private function parseSpringFestival() {

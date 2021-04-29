@@ -9,7 +9,7 @@
 
 namespace Holiday\Util;
 
-trait GetFile {
+trait FileUtil {
 
     /**
      * @param string $url
@@ -17,7 +17,16 @@ trait GetFile {
      *
      * @return bool
      */
-    public function downloadFile($url, $storage_path) {
+    public function downloadFile($url, $storage_path): bool {
         return (bool)file_put_contents($storage_path, file_get_contents($url));
+    }
+
+    /**
+     * @param string $content
+     *
+     * @return string|null
+     */
+    public function trimHtml(string $content): ?string {
+        return preg_replace('/<[^>]+>/', '', $content);
     }
 }
