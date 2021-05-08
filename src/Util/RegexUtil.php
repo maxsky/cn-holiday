@@ -11,8 +11,6 @@ namespace Holiday\Util;
 
 trait RegexUtil {
 
-    use FileUtil;
-
     /**
      * @param string $keyword
      *
@@ -24,7 +22,8 @@ trait RegexUtil {
         $lineString = $lineString[0] ?? null;
 
         if ($lineString) {
-            return $this->trimHtml($lineString);
+            // trim html tag
+            return preg_replace('/<[^>]+>/', '', $lineString);
         }
 
         return null;
@@ -46,7 +45,7 @@ trait RegexUtil {
      *
      * @return int
      */
-    public function getDateLength(string $line_string): int {
+    public function getHolidayLength(string $line_string): int {
         preg_match('/(?<=共)[\d]+(?=天)/', $line_string, $length);
 
         return ($length[0] ?? 0);
@@ -57,7 +56,7 @@ trait RegexUtil {
      *
      * @return bool
      */
-    public function isWorkdayChanged(string $line_string): bool {
+    public function isWorkdayNeedChange(string $line_string): bool {
         return strpos($line_string, '调休') !== false;
     }
 }
