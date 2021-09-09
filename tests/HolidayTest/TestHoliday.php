@@ -7,18 +7,14 @@
  * Time: 14:39
  */
 
-use Holiday\Util\HolidayParser;
+use Holiday\CNHoliday;
+use Holiday\Struct\Holiday;
+use Holiday\Util\FileUtil;
+use Holiday\Util\Traits\HolidayParserTrait;
 
 class TestHoliday extends PHPUnit\Framework\TestCase {
 
-    use HolidayParser;
-
-    const HOLIDAYS = ['元旦', '春节', '清明节', '劳动节', '端午节', '中秋节', '国庆节'];
-
-    const RECESS = '放假';
-
-    private $fileContent;
-    private $year;
+    use HolidayParserTrait;
 
     /**
      * @throws Exception
@@ -26,20 +22,44 @@ class TestHoliday extends PHPUnit\Framework\TestCase {
     protected function setUp() {
         parent::setUp();
 
-        $this->year = 2021;
+        $this->year = 2017;
     }
 
-    public function testIsTodayHoliday() {
-        $url = 'http://www.gov.cn/zhengce/zhengceku/2020-11/25/content_5564127.htm';
+    public function testIsTodayWorkday() {
+        $this->assertTrue(is_bool(CNHoliday::getInstance()->addYear()->addMonth()->addDays()->isWeekend()));
     }
 
     public function testHolidayObject() {
-        $this->fileContent = file_get_contents(__DIR__ . '/../Files/2020.json');
+        $fileContent = json_decode(
+            file_get_contents(__DIR__ . '/../Files/2017.json'), true
+        )['content'];
 
-        foreach (self::HOLIDAYS as $holiday) {
-            var_dump($this->parseHolidayBegin($holiday)->toDateTimeString());
-            var_dump($this->parseHolidayLength($holiday));
+        $fileContent = $this->trimHtmlTags($fileContent);
+
+        $holidays = [];
+
+        foreach (FESTIVALS as $holiday) {
+            $obj = new Holiday();
+
+            $holidayBegin = $this->parseHolidayBegin($holiday);
+
+            $obj->setName($holiday);
+            $obj->setYear($this->year);
+            $obj->setMonth($holidayBegin->month);
+            $obj->setDay($holidayBegin->day);
+            $obj->setLength($this->parseHolidayLength($holiday));
+
+            $extraWork = $this->parseHasExtraWork($holiday);
+
+            $obj->setExtraWork($extraWork);
+
+            if ($extraWork) {
+                $obj->setExtraWorkDays($this->parseExtraWorkDays($holiday));
+            }
+
+            $holidays[] = $obj;
         }
 
+        $this->assertNotEmpty($holidays);
     }
 }

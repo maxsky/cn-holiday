@@ -10,12 +10,20 @@
 namespace Holiday;
 
 use Carbon\Carbon;
-use Holiday\Abstracts\AbstractHoliday;
+use Holiday\Util\HolidayUtil;
 
-class CNHoliday extends AbstractHoliday {
+class CNHoliday extends Carbon {
 
     /** @var CNHoliday */
     public static $holiday;
+
+    private $holidayUtil;
+
+    public function __construct($time = null, $tz = null) {
+        parent::__construct($time, $tz);
+
+        $this->holidayUtil = new HolidayUtil();
+    }
 
     /**
      * @return CNHoliday
@@ -26,10 +34,5 @@ class CNHoliday extends AbstractHoliday {
         }
 
         return self::$holiday;
-    }
-
-    public function isHolidayToday() {
-        $date = Carbon::createFromTimeString('2021-05-01 14:34:42')->format('Ymd');
-
     }
 }
