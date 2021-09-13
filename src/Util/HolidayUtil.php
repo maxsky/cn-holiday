@@ -17,26 +17,46 @@ class HolidayUtil extends FileUtil {
 
     use HolidayParserTrait;
 
-    public $year;
+    private $year;
+    private $storagePath;
+    private $holidays;
 
-    private $content;
-
-    public function __construct(?int $year = null) {
+    public function __construct(int $year) {
         parent::__construct();
 
         $this->year = $year;
     }
 
     /**
-     * @param string|null $storage_path
+     * @param string $storage_path
      *
+     * @return $this
+     */
+    public function setStoragePath(string $storage_path): HolidayUtil {
+        $this->storagePath = $storage_path;
+
+        return $this;
+    }
+
+    /**
      * @return Collection
      */
-    private function setHolidays(?string $storage_path = null): Collection {
-        if ($storage_path) {
-            $this->content = $this->getFileContent($storage_path);
+    public function getHolidays(): Collection {
+        if (!$this->holidays) {
+            $this->setHolidays();
+        }
+
+        return $this->holidays;
+    }
+
+    /**
+     * @return void
+     */
+    private function setHolidays(): void {
+        if ($this->storagePath) {
+            $content = $this->getFileContent($this->storagePath);
         } else {
-            $this->content = $this->httpGetFileContent();
+            $content = $this->httpGetFileContent();
         }
 
         $holidays = collect();
@@ -44,25 +64,25 @@ class HolidayUtil extends FileUtil {
         foreach (FESTIVALS as $holiday) {
             $obj = new Holiday();
 
-            $holidayBegin = $this->parseHolidayBegin($holiday, $this->content);
+            $holidayBegin = $this->parseHolidayBegin($holiday, $content);
 
             $obj->setName($holiday);
             $obj->setYear($this->year);
             $obj->setMonth($holidayBegin->month);
             $obj->setDay($holidayBegin->day);
-            $obj->setLength($this->parseHolidayLength($holiday, $this->content));
+            $obj->setLength($this->parseHolidayLength($holiday, $content));
 
-            $extraWork = $this->parseHasExtraWork($holiday, $this->content);
+            $extraWork = $this->parseHasExtraWork($holiday, $content);
 
             $obj->setExtraWork($extraWork);
 
             if ($extraWork) {
-                $obj->setExtraWorkDays($this->parseExtraWorkDays($holiday, $this->content));
+                $obj->setExtraWorkDays($this->parseExtraWorkDays($holiday, $content));
             }
 
             $holidays->add($obj);
         }
 
-        return $holidays;
+        $this->holidays = $holidays;
     }
 }

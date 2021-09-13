@@ -12,27 +12,26 @@ namespace Holiday;
 use Carbon\Carbon;
 use Holiday\Util\HolidayUtil;
 
-class CNHoliday extends Carbon {
-
-    /** @var CNHoliday */
-    public static $holiday;
+class CNHoliday {
 
     private $holidayUtil;
 
-    public function __construct($time = null, $tz = null) {
-        parent::__construct($time, $tz);
-
-        $this->holidayUtil = new HolidayUtil();
-    }
-
-    /**
-     * @return CNHoliday
-     */
-    public static function getInstance(): CNHoliday {
-        if (!self::$holiday) {
-            self::$holiday = new self();
+    public function __construct(?int $year = null) {
+        if (!$year) {
+            $year = Carbon::now()->year;
         }
 
-        return self::$holiday;
+        $this->holidayUtil = new HolidayUtil($year);
+    }
+
+    public function isTodayHoliday() {
+        $holidays = $this->holidayUtil->getHolidays();
+
+        $now = Carbon::now();
+
+        $month = $now->month;
+        $day = $now->day;
+
+        var_dump($holidays->where('month', $month)->where('day', $day)->first());
     }
 }

@@ -74,7 +74,8 @@ trait HolidayParserTrait {
      * @return bool
      */
     private function parseHasExtraWork(string $keyword, string $content): bool {
-        return strpos($this->getLineString($keyword, $content), '调休') !== false;
+        return strpos($this->getLineString($keyword, $content), '调休') !== false
+            && $this->getExtraWorkDays($keyword, $content);
     }
 
     /**

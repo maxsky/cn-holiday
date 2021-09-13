@@ -30,7 +30,7 @@ abstract class FileUtil {
      *
      * @return string|null
      */
-    public function getFileContent(string $file_path): ?string {
+    protected function getFileContent(string $file_path): ?string {
         $fileContent = file_get_contents($file_path);
 
         if (!$fileContent) {
@@ -48,7 +48,7 @@ abstract class FileUtil {
      *
      * @return false|int
      */
-    public function putFileContent(string $file_path, string $content) {
+    protected function putFileContent(string $file_path, string $content) {
         return file_put_contents($file_path, $content);
     }
 
@@ -57,7 +57,7 @@ abstract class FileUtil {
      *
      * @return string|null
      */
-    public function httpGetFileContent(?int $year = null): ?string {
+    protected function httpGetFileContent(?int $year = null): ?string {
         $fileNum = $this->getFileNumber($year);
 
         if ($fileNum) {
