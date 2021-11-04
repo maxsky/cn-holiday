@@ -15,7 +15,7 @@ class TestHolidayUtil extends TestCase {
     /**
      * @var int
      */
-    private $year = 2021;
+    private $year = 2022;
 
     /**
      * @throws Exception

@@ -52,9 +52,10 @@ trait HttpHandleTrait {
                 't' => 'zhengcelibrary_gw',
                 'q' => "{$year}节假日",
                 'timetype' => 'timezd',
-                'searchfield' => 'title',
-                'pcodeJiguan' => '国办发:国办函:国办发明电', // 国办发明电
+                'searchfield' => 'title:content', // title:content:summary
+                'pcodeJiguan' => '国办发明电', // 国办发:国办函:国办发明电
                 'puborg' => '国务院办公厅',
+                'filetype' => '通知',
                 'n' => 1,
                 'sort' => 'pubtime'
             ]
