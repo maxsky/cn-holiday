@@ -11,27 +11,152 @@ namespace Holiday;
 
 use Carbon\Carbon;
 use Holiday\Util\HolidayUtil;
+use Tightenco\Collect\Support\Collection;
 
 class CNHoliday {
 
-    private $holidayUtil;
+    private $year;
+    private $storage_path;
 
-    public function __construct(?int $year = null) {
+    /** @var Collection */
+    private $holidays;
+
+    /** @var Collection */
+    private $holidayDates;
+
+    /** @var Collection */
+    private $extraWorkDayDates;
+
+    public function __construct(?int $year = null, ?string $storage_path = null) {
+        $this->setParams($year, $storage_path);
+    }
+
+    /**
+     * @param int|null    $year
+     * @param string|null $storage_path
+     *
+     * @return CNHoliday
+     */
+    public function setParams(?int $year = null, ?string $storage_path = null): CNHoliday {
         if (!$year) {
             $year = Carbon::now()->year;
         }
 
-        $this->holidayUtil = new HolidayUtil($year);
+        $this->year = $year;
+        $this->storage_path = $storage_path;
+
+        $holidayUtil = (new HolidayUtil($year))->setStoragePath($storage_path);
+        $this->holidays = $holidayUtil->getHolidays();
+        $this->holidayDates = $holidayUtil->getHolidayDates();
+        $this->extraWorkDayDates = $holidayUtil->getExtraWorkDayDates();
+
+        return $this;
     }
 
-    public function isTodayHoliday() {
-        $holidays = $this->holidayUtil->getHolidays();
+    /**
+     * @return Collection
+     */
+    public function getHolidays(): Collection {
+        return $this->holidays;
+    }
 
+    /**
+     * @return Collection
+     */
+    public function getHolidayDates(): Collection {
+        return $this->holidayDates;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getExtraWorkDayDates(): Collection {
+        return $this->extraWorkDayDates;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTodayHoliday(): bool {
         $now = Carbon::now();
 
-        $month = $now->month;
-        $day = $now->day;
+        return $this->holidayDates
+            ->where('year', $now->year)
+            ->where('month', $now->month)
+            ->where('day', $now->day)
+            ->count();
+    }
 
-        var_dump($holidays->where('month', $month)->where('day', $day)->first());
+    /**
+     * @param int $year
+     * @param int $month
+     * @param int $day
+     *
+     * @return bool
+     */
+    public function isHoliday(int $year, int $month, int $day): bool {
+        if ($year !== $this->year) {
+            $this->setParams($year, $this->storage_path);
+        }
+
+        return $this->holidayDates
+            ->where('year', $year)
+            ->where('month', $month)
+            ->where('day', $day)
+            ->count();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTodayOffDay(): bool {
+        return $this->isTodayHoliday() || Carbon::now()->isWeekend();
+    }
+
+    /**
+     * @param int $year
+     * @param int $month
+     * @param int $day
+     *
+     * @return bool
+     */
+    public function isOffDay(int $year, int $month, int $day): bool {
+        if ($year !== $this->year) {
+            $this->setParams($year, $this->storage_path);
+        }
+
+        return $this->isHoliday($year, $month, $day) || Carbon::createFromDate($year, $month, $day)->isWeekend();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTodayExtraWorkDay(): bool {
+        $now = Carbon::now();
+
+        return $this->extraWorkDayDates
+            ->where('year', $now->year)
+            ->where('month', $now->month)
+            ->where('day', $now->day)
+            ->count();
+    }
+
+    /**
+     * @param int $year
+     * @param int $month
+     * @param int $day
+     *
+     * @return bool
+     */
+    public function isExtraWorkDay(int $year, int $month, int $day): bool {
+        if ($year !== $this->year) {
+            $this->setParams($year, $this->storage_path);
+        }
+
+        return $this->extraWorkDayDates
+            ->where('year', $year)
+            ->where('month', $month)
+            ->where('day', $day)
+            ->count();
     }
 }

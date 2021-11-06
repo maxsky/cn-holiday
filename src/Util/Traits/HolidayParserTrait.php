@@ -90,7 +90,13 @@ trait HolidayParserTrait {
         $days = [];
 
         foreach ($extraWorkDays as $extraWorkDay) {
-            $days[] = $this->createDate($keyword, $extraWorkDay);
+            $date = $this->createDate($keyword, $extraWorkDay);
+
+            $days[] = [
+                'year' => $date->year,
+                'month' => $date->month,
+                'day' => $date->day,
+            ];
         }
 
         return $days;

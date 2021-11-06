@@ -5,6 +5,8 @@
  * User: maxsky
  * Date: 2021/9/9
  * Time: 20:19
+ *
+ * @noinspection HttpUrlsUsage
  */
 
 const QUERY_HOLIDAY_FILE = 'http://sousuo.gov.cn/data';

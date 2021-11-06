@@ -9,9 +9,8 @@
 
 namespace Holiday\Util;
 
-use Holiday\Struct\Holiday;
 use Holiday\Util\Traits\HolidayParserTrait;
-use Illuminate\Support\Collection;
+use Tightenco\Collect\Support\Collection;
 
 class HolidayUtil extends FileUtil {
 
@@ -19,6 +18,8 @@ class HolidayUtil extends FileUtil {
 
     private $year;
     private $storagePath;
+
+    /** @var Collection */
     private $holidays;
 
     public function __construct(int $year) {
@@ -28,11 +29,11 @@ class HolidayUtil extends FileUtil {
     }
 
     /**
-     * @param string $storage_path
+     * @param string|null $storage_path
      *
      * @return $this
      */
-    public function setStoragePath(string $storage_path): HolidayUtil {
+    public function setStoragePath(?string $storage_path): HolidayUtil {
         $this->storagePath = $storage_path;
 
         return $this;
@@ -50,6 +51,38 @@ class HolidayUtil extends FileUtil {
     }
 
     /**
+     * @return Collection
+     */
+    public function getHolidayDates(): Collection {
+        $dates = $this->holidays->pluck('dates');
+
+        $result = [];
+
+        $dates->map(function ($item) use (&$result) {
+            $result = array_merge($result, $item);
+        });
+
+        return collect($result);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getExtraWorkDayDates(): Collection {
+        $dates = $this->holidays->pluck('extraWorkDays');
+
+        $result = [];
+
+        $dates->map(function ($item) use (&$result) {
+            if ($item) {
+                $result = array_merge($result, $item);
+            }
+        });
+
+        return collect($result);
+    }
+
+    /**
      * @return void
      */
     private function setHolidays(): void {
@@ -59,30 +92,44 @@ class HolidayUtil extends FileUtil {
             $content = $this->httpGetFileContent();
         }
 
-        $holidays = collect();
+        $holidays = [];
 
-        foreach (FESTIVALS as $holiday) {
-            $obj = new Holiday();
-
+        foreach (HOLIDAYS as $holiday) {
             $holidayBegin = $this->parseHolidayBegin($holiday, $content);
 
-            $obj->setName($holiday);
-            $obj->setYear($this->year);
-            $obj->setMonth($holidayBegin->month);
-            $obj->setDay($holidayBegin->day);
-            $obj->setLength($this->parseHolidayLength($holiday, $content));
+            $item = [
+                'name' => $holiday,
+                'year' => $holidayBegin->year,
+                'month' => $holidayBegin->month,
+                'day' => $holidayBegin->day,
+                'length' => $this->parseHolidayLength($holiday, $content)
+            ];
+
+            $dates = [];
+
+            for ($i = 0; $i < $item['length']; $i++) {
+                $dates[] = [
+                    'year' => $holidayBegin->year,
+                    'month' => $holidayBegin->month,
+                    'day' => $holidayBegin->day
+                ];
+
+                $holidayBegin->addDay();
+            }
+
+            $item['dates'] = $dates;
 
             $extraWork = $this->parseHasExtraWork($holiday, $content);
 
-            $obj->setExtraWork($extraWork);
+            $item['extraWork'] = $extraWork;
 
             if ($extraWork) {
-                $obj->setExtraWorkDays($this->parseExtraWorkDays($holiday, $content));
+                $item['extraWorkDays'] = $this->parseExtraWorkDays($holiday, $content);
             }
 
-            $holidays->add($obj);
+            $holidays[] = $item;
         }
 
-        $this->holidays = $holidays;
+        $this->holidays = collect($holidays);
     }
 }

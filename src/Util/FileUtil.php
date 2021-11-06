@@ -22,7 +22,9 @@ abstract class FileUtil {
     private $httpClient;
 
     public function __construct() {
-        $this->httpClient = new Client();
+        $this->httpClient = new Client([
+            'verify' => false
+        ]);
     }
 
     /**
@@ -32,8 +34,9 @@ abstract class FileUtil {
      */
     protected function getFileContent(string $file_path): ?string {
         $fileContent = file_get_contents($file_path);
+        $fileSize = filesize($file_path);
 
-        if (!$fileContent) {
+        if (!$fileContent || !$fileSize || $fileSize / 1024 < 5) {
             $fileContent = $this->httpGetFileContent();
 
             $this->putFileContent($file_path, $fileContent);
