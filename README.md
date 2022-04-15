@@ -15,7 +15,7 @@ PHP >= 7.1
 ## 安装
 
 ```shell
-composer required maxsky/cn-holiday
+composer require maxsky/cn-holiday
 ```
 
 
