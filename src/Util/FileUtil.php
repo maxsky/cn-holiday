@@ -22,9 +22,7 @@ abstract class FileUtil {
     private $httpClient;
 
     public function __construct() {
-        $this->httpClient = new Client([
-            'verify' => false
-        ]);
+        $this->httpClient = new Client(['verify' => false]);
     }
 
     /**
