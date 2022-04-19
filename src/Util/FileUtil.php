@@ -31,14 +31,18 @@ abstract class FileUtil {
      * @return string|null
      */
     protected function getFileContent(string $file_path): ?string {
-        $fileContent = file_get_contents($file_path);
-        $fileSize = filesize($file_path);
+        if (file_exists($file_path)) {
+            $fileContent = file_get_contents($file_path);
+            $fileSize = filesize($file_path);
 
-        if (!$fileContent || !$fileSize || $fileSize / 1024 < 5) {
-            $fileContent = $this->httpGetFileContent();
-
-            $this->putFileContent($file_path, $fileContent);
+            if ($fileContent && $fileSize && $fileSize / 1024 >= 5) {
+                return $fileContent;
+            }
         }
+
+        $fileContent = $this->httpGetFileContent();
+
+        $this->putFileContent($file_path, $fileContent);
 
         return $fileContent;
     }

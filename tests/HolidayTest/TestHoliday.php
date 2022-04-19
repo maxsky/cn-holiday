@@ -22,12 +22,13 @@ class TestHoliday extends TestCase {
     /**
      * @var int
      */
-    private $year = 2021;
+    private $year = 2022;
 
     /**
+     * @return void
      * @throws Exception
      */
-    protected function setUp() {
+    protected function setUp(): void {
         parent::setUp();
     }
 
@@ -71,6 +72,16 @@ class TestHoliday extends TestCase {
         $this->assertTrue($holiday->isOffDay(2021, 10, 7));
         $this->assertTrue(is_bool($holiday->isTodayExtraWorkDay()));
         $this->assertTrue($holiday->isExtraWorkDay(2021, 10, 8));
+    }
 
+    public function testFileStorage() {
+        $holiday = new CNHoliday($this->year, __DIR__ . "/../Files/tmp/$this->year.json");
+
+        $this->assertTrue(is_bool($holiday->isTodayHoliday()));
+        $this->assertTrue($holiday->isHoliday(2022, 10, 1));
+        $this->assertTrue(is_bool($holiday->isTodayOffDay()));
+        $this->assertTrue($holiday->isOffDay(2022, 10, 7));
+        $this->assertTrue(is_bool($holiday->isTodayExtraWorkDay()));
+        $this->assertTrue($holiday->isExtraWorkDay(2022, 10, 8));
     }
 }
