@@ -35,7 +35,7 @@ abstract class FileUtil {
             $fileContent = file_get_contents($file_path);
             $fileSize = filesize($file_path);
 
-            if ($fileContent && $fileSize && $fileSize / 1024 >= 5) {
+            if ($fileContent && $fileSize && round($fileSize / 1024)) {
                 return $fileContent;
             }
         }

@@ -29,7 +29,7 @@ trait HttpHandleTrait {
 
                 $strArray = explode('/', $queryString);
 
-                preg_match('/[\d]+/', end($strArray), $fileNum);
+                preg_match('/\d+/', end($strArray), $fileNum);
 
                 return $fileNum[0] ?? false;
             }
