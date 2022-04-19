@@ -29,16 +29,18 @@ use Holiday\CNHoliday;
 
 // 第一个参数为需要获取的年份，如果忽略默认取当前年份
 // 第二个参数存储路径以文件名结尾，如果忽略则每次从政府信息公开平台获取（建议设置）
-$holiday = new CNHoliday(2021, '/tmp/cn-holiday/2021.json');
+$holiday = new CNHoliday(2021, '/tmp/cn-holiday/2021.txt');
 
 $holiday->isTodayHoliday();             // 当天是否为假期
 $holiday->isHoliday(2021, 10, 1);       // 某天是否为假期
+// 注意，如果遇到周六/周末需要补班的日期需要用 isTodayExtraWorkDay 或 isExtraWorkDay 验证，
+// 该方法在周六/周末但需要补班的情况下仍然会返回 true
 $holiday->isTodayOffDay();              // 当天是否为休息日（假期/周末）
 $holiday->isOffDay(2021, 10, 7);        // 某天是否为休息日（假期/周末）
 $holiday->isTodayExtraWorkDay();        // 当天是否为调休日（假期补班）
 $holiday->isExtraWorkDay(2021, 10, 10); // 某天是否为调休日（假期补班）
 
-$holiday->setParams(2022, '/tmp/cn-holiday/2022.json'); // 重设年份及存储路径
+$holiday->setParams(2022, '/tmp/cn-holiday/2022.txt'); // 重设年份及存储路径
 $holiday->getHolidays();          // 获取当年所有节假日（完整结构）
 $holiday->getHolidayDates();      // 获取当年所有节假日日期
 $holiday->getExtraWorkDayDates(); // 获取当年所有调休日日期

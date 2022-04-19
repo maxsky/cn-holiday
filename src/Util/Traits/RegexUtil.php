@@ -37,7 +37,7 @@ trait RegexUtil {
      * @return string|null
      */
     private function getBeginDate(string $line_string): ?string {
-        preg_match('/[\d]+月[\d]+日/', $line_string, $date);
+        preg_match('/\d+月\d+日/', $line_string, $date);
 
         return $date[0] ?? null;
     }
@@ -48,7 +48,7 @@ trait RegexUtil {
      * @return int
      */
     private function getHolidayLength(string $line_string): int {
-        preg_match('/(?<=共)[\d]+(?=天)/', $line_string, $length);
+        preg_match('/(?<=共)\d+(?=天)/', $line_string, $length);
 
         return $length[0] ?? 1;
     }

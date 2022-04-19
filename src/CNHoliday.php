@@ -9,22 +9,23 @@
 
 namespace Holiday;
 
+use ArrayAccess;
 use Carbon\Carbon;
+use Countable;
 use Holiday\Util\HolidayUtil;
-use Tightenco\Collect\Support\Collection;
 
 class CNHoliday {
 
     private $year;
     private $storage_path;
 
-    /** @var Collection */
+    /** @var ArrayAccess|Countable */
     private $holidays;
 
-    /** @var Collection */
+    /** @var ArrayAccess|Countable */
     private $holidayDates;
 
-    /** @var Collection */
+    /** @var ArrayAccess|Countable */
     private $extraWorkDayDates;
 
     public function __construct(?int $year = null, ?string $storage_path = null) {
@@ -54,23 +55,23 @@ class CNHoliday {
     }
 
     /**
-     * @return Collection
+     * @return ArrayAccess|Countable
      */
-    public function getHolidays(): Collection {
+    public function getHolidays() {
         return $this->holidays;
     }
 
     /**
-     * @return Collection
+     * @return ArrayAccess|Countable
      */
-    public function getHolidayDates(): Collection {
+    public function getHolidayDates() {
         return $this->holidayDates;
     }
 
     /**
-     * @return Collection
+     * @return ArrayAccess|Countable
      */
-    public function getExtraWorkDayDates(): Collection {
+    public function getExtraWorkDayDates() {
         return $this->extraWorkDayDates;
     }
 

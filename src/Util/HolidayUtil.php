@@ -9,8 +9,9 @@
 
 namespace Holiday\Util;
 
+use ArrayAccess;
+use Countable;
 use Holiday\Util\Traits\HolidayParserTrait;
-use Tightenco\Collect\Support\Collection;
 
 class HolidayUtil extends FileUtil {
 
@@ -19,7 +20,7 @@ class HolidayUtil extends FileUtil {
     private $year;
     private $storagePath;
 
-    /** @var Collection */
+    /** @var ArrayAccess|Countable */
     private $holidays;
 
     public function __construct(int $year) {
@@ -31,7 +32,7 @@ class HolidayUtil extends FileUtil {
     /**
      * @param string|null $storage_path
      *
-     * @return $this
+     * @return HolidayUtil
      */
     public function setStoragePath(?string $storage_path): HolidayUtil {
         $this->storagePath = $storage_path;
@@ -40,9 +41,9 @@ class HolidayUtil extends FileUtil {
     }
 
     /**
-     * @return Collection
+     * @return ArrayAccess|Countable
      */
-    public function getHolidays(): Collection {
+    public function getHolidays() {
         if (!$this->holidays) {
             $this->setHolidays();
         }
@@ -51,9 +52,9 @@ class HolidayUtil extends FileUtil {
     }
 
     /**
-     * @return Collection
+     * @return ArrayAccess|Countable
      */
-    public function getHolidayDates(): Collection {
+    public function getHolidayDates() {
         $dates = $this->holidays->pluck('dates');
 
         $result = [];
@@ -66,9 +67,9 @@ class HolidayUtil extends FileUtil {
     }
 
     /**
-     * @return Collection
+     * @return ArrayAccess|Countable
      */
-    public function getExtraWorkDayDates(): Collection {
+    public function getExtraWorkDayDates() {
         $dates = $this->holidays->pluck('extraWorkDays');
 
         $result = [];

@@ -60,7 +60,7 @@ class TestHoliday extends TestCase {
     public function testHolidayObject() {
         $holidayUtil = new HolidayUtil($this->year);
 
-        $this->assertTrue(in_array(count($holidayUtil->getHolidays()), [6, 7]));
+        $this->assertTrue(in_array($holidayUtil->getHolidays()->count(), [6, 7]));
     }
 
     public function testClass() {
@@ -75,7 +75,7 @@ class TestHoliday extends TestCase {
     }
 
     public function testFileStorage() {
-        $holiday = new CNHoliday($this->year, __DIR__ . "/../Files/tmp/$this->year.json");
+        $holiday = new CNHoliday($this->year, __DIR__ . "/../Files/tmp/$this->year.txt");
 
         $this->assertTrue(is_bool($holiday->isTodayHoliday()));
         $this->assertTrue($holiday->isHoliday(2022, 10, 1));
