@@ -1,6 +1,7 @@
 # CN-Holiday
 
 [![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
+[![codecov](https://codecov.io/github/maxsky/cn-holiday/branch/master/graph/badge.svg?token=NIaazhukTp)](https://codecov.io/github/maxsky/cn-holiday)
 
 获取中国法定假日
 
@@ -51,4 +52,3 @@ $holiday->getExtraWorkDayDates(); // 获取当年所有调休日日期
 ## 说明
 
 `tests/Files` 中存储的 `json` 文件为 2017 年至 2022 年国务院办公厅发布的节假日安排通知原始文件，本库通过正则解析该 `json` 文件组装而实现，仅供学习参考。如遇政府信息公开平台接口变更导致无法正常请求到相应内容而影响到项目，请自行处理。
-
