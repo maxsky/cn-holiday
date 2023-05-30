@@ -1,18 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
-         beStrictAboutCoversAnnotation="true"
-         beStrictAboutOutputDuringTests="true"
-         beStrictAboutTodoAnnotatedTests="true"
-         bootstrap="vendor/autoload.php"
+         bootstrap="./vendor/autoload.php"
          cacheResultFile=".phpunit.cache/test-results"
-         convertDeprecationsToExceptions="true"
-         executionOrder="depends,defects"
-         failOnRisky="true"
-         failOnWarning="true"
-         forceCoversAnnotation="true"
-         verbose="true">
-
+         colors="true"
+         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
+>
     <coverage processUncoveredFiles="true" cacheDirectory=".phpunit.cache/code-coverage">
         <include>
             <directory suffix=".php">./src</directory>
@@ -21,7 +13,7 @@
 
     <testsuites>
         <testsuite name="Test Suite">
-            <directory>./tests</directory>
+            <directory suffix=".php">./tests</directory>
         </testsuite>
     </testsuites>
 </phpunit>

@@ -69,11 +69,11 @@ class TestHoliday extends TestCase {
         $holiday = new CNHoliday($this->year);
 
         $this->assertTrue(is_bool($holiday->isTodayHoliday()));
-        $this->assertTrue($holiday->isHoliday(2021, 10, 1));
+        $this->assertTrue($holiday->isHoliday(2022, 10, 1));
         $this->assertTrue(is_bool($holiday->isTodayOffDay()));
-        $this->assertTrue($holiday->isOffDay(2021, 10, 7));
+        $this->assertTrue($holiday->isOffDay(2022, 10, 7));
         $this->assertTrue(is_bool($holiday->isTodayExtraWorkDay()));
-        $this->assertTrue($holiday->isExtraWorkDay(2021, 10, 8));
+        $this->assertTrue($holiday->isExtraWorkDay(2022, 10, 8));
     }
 
     public function testFileStorage() {
