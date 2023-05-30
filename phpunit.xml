@@ -18,8 +18,4 @@
             <directory suffix=".php">./tests</directory>
         </testsuite>
     </testsuites>
-
-    <logging>
-        <junit outputFile="coverage.xml"/>
-    </logging>
 </phpunit>
