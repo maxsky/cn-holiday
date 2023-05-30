@@ -28,6 +28,11 @@
             "src/Helper/strings.php"
         ]
     },
+    "autoload-dev": {
+        "psr-4": {
+            "HolidayTest\\": "./tests"
+        }
+    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }

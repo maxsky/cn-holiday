@@ -7,14 +7,13 @@
  * Time: 14:39
  */
 
-namespace HolidayTest;
+namespace HolidayTest\AllTest;
 
-use Carbon\Carbon;
 use Exception;
 use Holiday\CNHoliday;
 use Holiday\Util\HolidayUtil;
 use Holiday\Util\Traits\HolidayParserTrait;
-use PHPUnit\Framework\TestCase;
+use HolidayTest\TestCase;
 
 class TestHoliday extends TestCase {
 

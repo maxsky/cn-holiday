@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          bootstrap="./vendor/autoload.php"
-         cacheResultFile=".phpunit.cache/test-results"
          colors="true"
-         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
->
-    <coverage processUncoveredFiles="true" cacheDirectory=".phpunit.cache/code-coverage">
+         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd">
+
+    <coverage>
         <include>
             <directory suffix=".php">./src</directory>
         </include>
+        <report>
+            <clover outputFile="coverage.xml"/>
+        </report>
     </coverage>
 
     <testsuites>
-        <testsuite name="Test Suite">
+        <testsuite name="TestSuite">
             <directory suffix=".php">./tests</directory>
         </testsuite>
     </testsuites>
+
+    <logging>
+        <junit outputFile="coverage.xml"/>
+    </logging>
 </phpunit>
