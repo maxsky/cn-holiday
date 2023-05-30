@@ -40,7 +40,7 @@ abstract class FileUtil {
             }
         }
 
-        $fileContent = $this->httpGetFileContent();
+        $fileContent = $this->httpGetFileContent($this->year);
 
         $this->putFileContent($file_path, $fileContent);
 

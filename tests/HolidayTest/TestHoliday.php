@@ -9,6 +9,7 @@
 
 namespace HolidayTest;
 
+use Carbon\Carbon;
 use Exception;
 use Holiday\CNHoliday;
 use Holiday\Util\HolidayUtil;
@@ -33,6 +34,7 @@ class TestHoliday extends TestCase {
     }
 
     public function testParser() {
+
         $content = json_decode(
             file_get_contents(__DIR__ . "/../Files/$this->year.json"), true
         )['content'];
@@ -83,5 +85,7 @@ class TestHoliday extends TestCase {
         $this->assertTrue($holiday->isOffDay(2022, 10, 7));
         $this->assertTrue(is_bool($holiday->isTodayExtraWorkDay()));
         $this->assertTrue($holiday->isExtraWorkDay(2022, 10, 8));
+
+        $this->assertEquals('劳动节', $holiday->getHolidayName(2022, 5, 1));
     }
 }

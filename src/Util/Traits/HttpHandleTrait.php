@@ -11,6 +11,8 @@
 
 namespace Holiday\Util\Traits;
 
+use GuzzleHttp\Exception\GuzzleException;
+
 trait HttpHandleTrait {
 
     /**
@@ -19,7 +21,7 @@ trait HttpHandleTrait {
      * @return false|string
      */
     private function getFileNumber(?int $year = null) {
-        $content = $this->queryFileList($year ?: '');
+        $content = $this->queryFileList((string)$year);
 
         if ($content) {
             $latestFile = current($content['searchVO']['listVO']);
@@ -44,22 +46,26 @@ trait HttpHandleTrait {
      * @return array|null
      */
     private function queryFileList(string $year = ''): ?array {
-        $result = $this->httpClient->get(QUERY_HOLIDAY_FILE, [
-            'headers' => [
-                'Referer' => 'http://sousuo.gov.cn/a.htm?t=zhengcelibrary'
-            ],
-            'query' => [
-                't' => 'zhengcelibrary_gw',
-                'q' => "{$year}节假日",
-                'timetype' => 'timezd',
-                'searchfield' => 'title:content', // title:content:summary
-                'pcodeJiguan' => '国办发明电', // 国办发:国办函:国办发明电
-                'puborg' => '国务院办公厅',
-                'filetype' => '通知',
-                'n' => 1,
-                'sort' => 'pubtime'
-            ]
-        ])->getBody();
+        try {
+            $result = $this->httpClient->get(QUERY_HOLIDAY_FILE, [
+                'headers' => [
+                    'Referer' => 'http://sousuo.gov.cn/a.htm?t=zhengcelibrary'
+                ],
+                'query' => [
+                    't' => 'zhengcelibrary_gw',
+                    'q' => "{$year}节假日",
+                    'timetype' => 'timezd',
+                    'searchfield' => 'title', // title:content:summary
+                    'pcodeJiguan' => '国办发明电', // 国办发:国办函:国办发明电
+                    'puborg' => '国务院办公厅',
+                    'filetype' => '通知',
+                    'n' => 1,
+                    'sort' => 'pubtime'
+                ]
+            ])->getBody();
+        } catch (GuzzleException $e) {
+            return null;
+        }
 
         $result = json_decode($result, true);
 
@@ -76,7 +82,11 @@ trait HttpHandleTrait {
      * @return string|null
      */
     private function queryJsonFileContent(string $file_number): ?string {
-        $result = $this->httpClient->get(GET_GOV_HOLIDAY_CONTENT . "/content_$file_number.json")->getBody();
+        try {
+            $result = $this->httpClient->get(GET_GOV_HOLIDAY_CONTENT . "/content_$file_number.json")->getBody();
+        } catch (GuzzleException $e) {
+            return null;
+        }
 
         $result = json_decode($result, true);
 

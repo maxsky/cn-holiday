@@ -10,11 +10,11 @@
         }
     ],
     "require": {
-        "php": "^7.2.5|^8.0",
+        "php": ">=7.2.5",
         "ext-json": "*",
-        "guzzlehttp/guzzle": "^7.4",
-        "nesbot/carbon": "^2.58",
-        "tightenco/collect": "^6.0|^8.0"
+        "guzzlehttp/guzzle": "^7.0",
+        "nesbot/carbon": "^2.60",
+        "tightenco/collect": "^6.0|^7.0|^8.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.0|^9.0"

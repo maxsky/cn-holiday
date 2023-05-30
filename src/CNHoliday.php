@@ -9,23 +9,22 @@
 
 namespace Holiday;
 
-use ArrayAccess;
 use Carbon\Carbon;
-use Countable;
 use Holiday\Util\HolidayUtil;
+use Tightenco\Collect\Support\Collection;
 
 class CNHoliday {
 
     private $year;
     private $storage_path;
 
-    /** @var ArrayAccess|Countable */
+    /** @var Collection */
     private $holidays;
 
-    /** @var ArrayAccess|Countable */
+    /** @var Collection */
     private $holidayDates;
 
-    /** @var ArrayAccess|Countable */
+    /** @var Collection */
     private $extraWorkDayDates;
 
     public function __construct(?int $year = null, ?string $storage_path = null) {
@@ -55,24 +54,61 @@ class CNHoliday {
     }
 
     /**
-     * @return ArrayAccess|Countable
+     * @return Collection
      */
-    public function getHolidays() {
+    public function getHolidays(): Collection {
         return $this->holidays;
     }
 
     /**
-     * @return ArrayAccess|Countable
+     * @return Collection
      */
-    public function getHolidayDates() {
+    public function getHolidayDates(): Collection {
         return $this->holidayDates;
     }
 
     /**
-     * @return ArrayAccess|Countable
+     * @return Collection
      */
-    public function getExtraWorkDayDates() {
+    public function getExtraWorkDayDates(): Collection {
         return $this->extraWorkDayDates;
+    }
+
+    /**
+     * @param int|null $year
+     * @param int|null $month
+     * @param int|null $day
+     *
+     * @return string|null
+     */
+    public function getHolidayName(?int $year = null, ?int $month = null, ?int $day = null): ?string {
+        $now = Carbon::today();
+
+        if (!$year) {
+            $year = $now->year;
+        }
+
+        if (!$month) {
+            $month = $now->month;
+        }
+
+        if (!$day) {
+            $day = $now->day;
+        }
+
+        $date = $this->holidayDates->where('year', $year)->where('month', $month)->where('day', $day)->first();
+
+        $holiday = $this->holidays->first(function ($holiday) use ($date) {
+            foreach ($holiday['dates'] as $item) {
+                if ($item === $date) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+
+        return $holiday['name'] ?? null;
     }
 
     /**
